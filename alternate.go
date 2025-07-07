@@ -2,6 +2,7 @@
 package alternate
 
 import (
+	"fmt"
 	"golang.org/x/net/context"
 
 	"github.com/coredns/coredns/plugin"
@@ -53,6 +54,8 @@ func (f Alternate) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Ms
 	rulesIndex := rcode
 	if nw.Msg != nil {
 		// Detect NODATA: response has NOERROR, but no answers
+		fmt.Println(nw.Msg.Rcode)
+		fmt.Println(nw.Msg.Answer)
 		if nw.Msg.Rcode == dns.RcodeSuccess && len(nw.Msg.Answer) == 0 {
 			rulesIndex = dns.RcodeNameError // Use NXDOMAIN
 		} else {
