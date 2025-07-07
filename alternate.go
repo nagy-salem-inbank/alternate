@@ -53,6 +53,7 @@ func (f Alternate) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Ms
 	//A forward doesn't return 0 only in case SERVFAIL
 	fmt.Println(nw.Msg.Rcode)
 	fmt.Println(nw.Msg.Answer)
+	return 0, fmt.Errorf("alternate: unexpected response: %s, %s", fmt.Sprint(nw.Msg.Rcode), fmt.Sprint(nw.Msg.Answer))
 	rulesIndex := rcode
 	if nw.Msg != nil {
 		// Detect NODATA: response has NOERROR, but no answers
