@@ -51,6 +51,8 @@ func (f Alternate) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Ms
 	//when rcode is SERVFAIL and nw.Msg is nil, otherwise we use nw.Msg.Rcode
 	//because, for example, for the following cases like NXDOMAIN, REFUSED the rcode is 0 (returned by forward)
 	//A forward doesn't return 0 only in case SERVFAIL
+	fmt.Println(nw.Msg.Rcode)
+	fmt.Println(nw.Msg.Answer)
 	rulesIndex := rcode
 	if nw.Msg != nil {
 		// Detect NODATA: response has NOERROR, but no answers
