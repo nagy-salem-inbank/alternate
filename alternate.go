@@ -4,6 +4,7 @@ package alternate
 import (
 	"fmt"
 	"golang.org/x/net/context"
+	"log"
 
 	"github.com/coredns/coredns/plugin"
 	"github.com/coredns/coredns/plugin/pkg/nonwriter"
@@ -45,14 +46,16 @@ func (f Alternate) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Ms
 		originalRequest = r.Copy()
 	}
 	nw := nonwriter.New(w)
+	fmt.Println(nw.Msg.Rcode)
+	fmt.Println(nw.Msg.Answer)
+	log.Println(nw.Msg.Rcode)
+	log.Println(nw.Msg.Answer)
 	rcode, err := plugin.NextOrFailure(f.Name(), f.Next, ctx, nw, r)
 
 	//By default the rulesIndex is equal rcode, so in such way we handle the case
 	//when rcode is SERVFAIL and nw.Msg is nil, otherwise we use nw.Msg.Rcode
 	//because, for example, for the following cases like NXDOMAIN, REFUSED the rcode is 0 (returned by forward)
 	//A forward doesn't return 0 only in case SERVFAIL
-	fmt.Println(nw.Msg.Rcode)
-	fmt.Println(nw.Msg.Answer)
 	return 0, fmt.Errorf("alternate: unexpected response: %s, %s", fmt.Sprint(nw.Msg.Rcode), fmt.Sprint(nw.Msg.Answer))
 	rulesIndex := rcode
 	if nw.Msg != nil {
